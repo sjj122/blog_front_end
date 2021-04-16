@@ -8,14 +8,23 @@
         <el-table
             :data="tableData"
             style="width: 100%"
-            max-height="340"
+            max-height="420"
             @expand-change="expandChange">
             <el-table-column type="expand">
                 <template slot-scope="scope">
                     <div v-if="currentUserBlogs[scope.row.user_id] !== undefined">
                         <section v-if="currentUserBlogs[scope.row.user_id].length !== 0" class="blogs-container">
-                            <article v-for="(item, index) in currentUserBlogs[scope.row.user_id]" :key="index">
-                                <el-tag type="success">{{item.b_title}}</el-tag>
+                            <article class="blog-item" v-for="(item, index) in currentUserBlogs[scope.row.user_id]" :key="index">
+                                <div class="blog_title_item" @click="gotoBlogDetail(item.b_id)">
+                                    <el-tooltip placement="top" content="查看文章详情">
+                                        <el-card>文章标题：<span class="blog_title_item_text">{{item.b_title}}</span></el-card>
+                                    </el-tooltip>
+                                </div>
+                                <el-tag class="blog_title_other" type="info">
+                                    <i class="iconfont icon-zan">{{ item.b_stars.length }}</i>
+                                    <i class="iconfont icon-look">{{ item.b_looks.length }}</i>
+                                    <i class="el-icon-chat-dot-square">{{ item.b_comments.length }}</i>
+                                </el-tag>
                             </article>
                         </section>
                         <section v-else>暂无数据</section>
@@ -107,6 +116,10 @@
                 if (res.status !== 200) return this.$message.error('数据获取失败')
                 // 以字典的形式存储
                 this.currentUserBlogs[user_id] = res.result.flat(Infinity)
+            },
+            // 5.去到博客详情页面
+            gotoBlogDetail(b_id) {
+                this.$router.push(`/blogDetail/${b_id}`)
             }
         },
         created() {
@@ -128,7 +141,42 @@
         justify-content: space-between;
     }
     .blogs-container {
+        width: 100%;
         display: grid;
         grid-template-columns: repeat(2, 1fr);
     }
+    .blog-item {
+        width: 95%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-right: 1px dashed #ccc;
+        padding-right: 8px;
+    }
+    .blog_title_item {
+        width: 100%;
+        margin-bottom: 5px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+    .blog_title_item_text {
+        font-size: 15px;
+        color: #666;
+    }
+    .blog_title_other {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-left: 4px;
+    }
+    .blog_title_other > i {
+        font-size: 12px;
+        margin-right: 5px;
+    }
+    .blog_title_other > i:nth-child(1) { color: red; }
+    .blog_title_other > i:nth-child(2) {
+        font-size: 13px;
+        color: black;
+    }
+    .blog_title_other > i:nth-child(3) { color: orange; }
 </style>

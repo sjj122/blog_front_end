@@ -6,7 +6,7 @@
       <div class="top">
         <!-- 1.头像 -->
         <div class="avatar">
-          <el-tooltip placement="right">
+          <el-tooltip placement="right" :enterable="false">
             <img slot="content" class="preview_avatar" v-lazy="userInfo.avatar"/>
             <img v-lazy="userInfo.avatar" />
           </el-tooltip>
